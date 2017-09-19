@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<ruleset name="FrameScratch">
+    <description>Formatages</description>
+    <arg name="colors"/>
+    <args name="p"/>
+    <file>src</file>
+    <file>public/index.php</file>
+    <rule ref="PSR2"/>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+</ruleset>

@@ -1,0 +1,22 @@
+{
+    "name": "root/frame-scratch",
+    "authors": [
+        {
+            "name": "Psyker",
+            "email": "bourgoin.theo1@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "src/Framework"
+        }
+    },
+    "require": {
+        "guzzlehttp/psr7": "^1.4",
+        "http-interop/response-sender": "^1.0",
+        "squizlabs/php_codesniffer": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.3"
+    }
+}
