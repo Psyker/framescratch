@@ -5,9 +5,11 @@ namespace Tests\Framework;
 use App\Blog\BlogModule;
 use Fig\Http\Message\RequestMethodInterface;
 use Framework\App;
+use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Tests\Framework\Modules\ErroredModule;
+use Tests\Framework\Modules\StringModule;
 
 class AppTest extends TestCase {
 
@@ -33,6 +35,17 @@ class AppTest extends TestCase {
         $requestSingle = new ServerRequest(RequestMethodInterface::METHOD_GET, '/blog/my-post');
         $responseSingle = $app->run($requestSingle);
         $this->assertContains('<h1>Post my-post</h1>', (string) $responseSingle->getBody());
+    }
+
+    public function testConvertStringToResponse()
+    {
+        $app = new App([
+            StringModule::class
+        ]);
+        $request = new ServerRequest(RequestMethodInterface::METHOD_GET, '/fake');
+        $response = $app->run($request);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertEquals('STRING', (string) $response->getBody());
     }
 
     public function testThrowExceptionIfNoResponseSent()
