@@ -23,12 +23,16 @@ class App
      * App constructor.
      *
      * @param string[] $modules Modules list to load.
+     * @param array $dependencies
      */
-    public function __construct(array $modules = [])
+    public function __construct(array $modules = [], array $dependencies = [])
     {
         $this->router = new Router();
+        if (array_key_exists('renderer', $dependencies)) {
+            $dependencies['renderer']->addGlobal('router', $this->router);
+        }
         foreach ($modules as $module) {
-            $this->modules[] = new $module($this->router);
+            $this->modules[] = new $module($this->router, $dependencies['renderer']);
         }
     }
 
@@ -37,10 +41,10 @@ class App
      *
      * @param ServerRequestInterface $request
      *
-     * @return ResponseInterface
+     * @return Response
      * @throws \Exception
      */
-    public function run(ServerRequestInterface $request): ResponseInterface
+    public function run(ServerRequestInterface $request): Response
     {
         // If the uri contain a / at his end, redirect to the "without /" version of the uri.
         $uri = $request->getUri()->getPath();
