@@ -1,0 +1,10 @@
+{% extends 'layout.html.twig' %}
+
+{% block title "Articles" %}
+
+{% block body %}
+<h1>Blog</h1>
+<ul>
+    <li><a href="{{ router.generateUri('blog.show', {'slug' : 'first-post'}) }}">First post</a></li>
+</ul>
+{% endblock %}
