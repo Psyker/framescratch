@@ -3,7 +3,7 @@
 use App\Blog\BlogModule;
 use Framework\App;
 
-require '../vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 $modules = [
     BlogModule::class
@@ -20,7 +20,7 @@ $builder->addDefinitions(dirname(__DIR__) . "/config.php");
 $container = $builder->build();
 
 $app = new App($container, $modules);
-
-$response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
-
-\Http\Response\send($response);
+if (php_sapi_name() != "cli") {
+    $response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
+    \Http\Response\send($response);
+}

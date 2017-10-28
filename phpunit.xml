@@ -2,6 +2,7 @@
     <testsuites>
         <testsuite name="FrameScratch">
             <directory>tests</directory>
+            <exclude>./tests/Framework/AppTest.php</exclude>
         </testsuite>
     </testsuites>
 </phpunit>

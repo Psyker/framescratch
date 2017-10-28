@@ -7,6 +7,10 @@ use Framework\Router;
 use Framework\Router\RouterTwigExtension;
 
 return [
+    'database.host' => 'localhost',
+    'database.user' => 'root',
+    'database.pass' => 'penchaksilat',
+    'database.name'=> 'framescratch',
     'views.path' => dirname(__DIR__) .  '/views',
     'twig.extensions' => [
         get(RouterTwigExtension::class)
