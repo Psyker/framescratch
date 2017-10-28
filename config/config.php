@@ -16,5 +16,17 @@ return [
         get(RouterTwigExtension::class)
     ],
     Router::class => object(),
-    RendererInterface::class => factory(TwigRendererFactory::class)
+    RendererInterface::class => factory(TwigRendererFactory::class),
+    \PDO::class => function(\Psr\Container\ContainerInterface $container ) {
+        return $pdo = new PDO(
+            'mysql:host='. $container->get('database.host').
+            ';dbname=' . $container->get('database.name'),
+            $container->get('database.user'),
+            $container->get('database.pass'),
+            [
+                PDO::FETCH_OBJ,
+                PDO::ERRMODE_EXCEPTION
+            ]
+         );
+    }
 ];
