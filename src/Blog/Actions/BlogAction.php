@@ -41,13 +41,18 @@ class BlogAction
         if ($request->getAttribute('id')) {
             return $this->show($request);
         }
-        return $this->index();
+        return $this->index($request);
     }
 
-    public function index(): string
+    /**
+     * @param Request $request
+     * @return string
+     */
+    public function index(Request $request): string
     {
-        $posts = $this->repository->findPaginated();
-        
+        $params = $request->getQueryParams();
+        $posts = $this->repository->findPaginated(15, $params['p'] ?? 1);
+
         return $this->renderer->render('@blog/index', compact('posts'));
     }
 

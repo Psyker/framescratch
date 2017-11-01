@@ -5,5 +5,7 @@
 {% block body %}
     <h1>Post {{ post.name }}</h1>
 
+    <p class="text-muted">Created {{ post.created_at | ago }}</p>
+
     {{ post.content | nl2br }}
 {% endblock %}

@@ -3,6 +3,7 @@
  namespace Test\Blog\Actions;
 
  use App\Blog\Actions\BlogAction;
+ use App\Blog\Entity\Post;
  use App\Blog\Repository\PostRepository;
  use Framework\Renderer\RendererInterface;
  use Framework\Router;
@@ -46,9 +47,9 @@
          );
      }
 
-     public function makePost(int $id, string $slug): \stdClass
+     public function makePost(int $id, string $slug): Post
      {
-         $post = new \stdClass();
+         $post = new Post();
          $post->id = $id;
          $post->slug = $slug;
 

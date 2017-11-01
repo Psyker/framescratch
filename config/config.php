@@ -5,6 +5,10 @@ use Framework\Renderer\TwigRendererFactory;
 use function \DI\{object, factory, get};
 use Framework\Router;
 use Framework\Router\RouterTwigExtension;
+use Framework\Twig\PagerFantaExtension;
+use Framework\Twig\TextExtension;
+use Framework\Twig\TimeExtension;
+use Psr\Container\ContainerInterface;
 
 return [
     'database.host' => 'localhost',
@@ -12,12 +16,15 @@ return [
     'database.pass' => 'penchaksilat',
     'database.name'=> 'framescratch',
     'views.path' => dirname(__DIR__) .  '/views',
-    'twig.extensions' => [
-        get(RouterTwigExtension::class)
-    ],
+    'twig.extensions' => array(
+        get(RouterTwigExtension::class),
+        get(PagerFantaExtension::class),
+        get(TextExtension::class),
+        get(TimeExtension::class)
+    ),
     Router::class => object(),
     RendererInterface::class => factory(TwigRendererFactory::class),
-    \PDO::class => function(\Psr\Container\ContainerInterface $container ) {
+    \PDO::class => function(ContainerInterface $container ) {
         return $pdo = new PDO(
             'mysql:host='. $container->get('database.host').
             ';dbname=' . $container->get('database.name'),
