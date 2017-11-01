@@ -25,7 +25,7 @@ class PostRepository
      */
     public function findPaginated(): array
     {
-       return $this->pdo
+        return $this->pdo
             ->query('SELECT * FROM posts ORDER BY created_at DESC LIMIT 10')
             ->fetchAll();
     }
