@@ -31,8 +31,8 @@ return [
             $container->get('database.user'),
             $container->get('database.pass'),
             [
-                PDO::FETCH_OBJ,
-                PDO::ERRMODE_EXCEPTION
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]
          );
     }

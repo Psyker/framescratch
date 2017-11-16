@@ -4,7 +4,6 @@
 
 {% block body %}
     <h1>Blog</h1>
-
     <div class="row">
         {% for row in posts | batch(3) %}
             <div class="card-deck">
@@ -32,7 +31,4 @@
         {% endfor %}
         {{ paginate(posts, 'blog.index') }}
     </div>
-
-
-
 {% endblock %}
