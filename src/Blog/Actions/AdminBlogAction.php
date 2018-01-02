@@ -6,6 +6,8 @@ use App\Blog\Repository\PostRepository;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
+use Framework\Session\FlashService;
+use Framework\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -29,11 +31,22 @@ class AdminBlogAction
      */
     private $repository;
 
-    public function __construct(RendererInterface $renderer, PostRepository $repository, Router $router)
-    {
+    /**
+     * @var FlashService
+     */
+    private $flash;
+
+    public function __construct(
+        RendererInterface $renderer,
+        PostRepository $repository,
+        Router $router,
+        SessionInterface $session,
+        FlashService $flash
+    ) {
         $this->router = $router;
         $this->renderer = $renderer;
         $this->repository = $repository;
+        $this->flash = $flash;
     }
 
     public function __invoke(Request $request)
@@ -98,6 +111,7 @@ class AdminBlogAction
             $params = $this->getParams($request);
             $params['updated_at'] = date('Y-m-d H:i:s');
             $this->repository->update($item->id, $params);
+            $this->flash->addFlash('success', 'The post has been edited well.');
 
             return $this->redirect('admin.blog.index');
         }

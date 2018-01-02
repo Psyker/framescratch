@@ -28,6 +28,13 @@
 <br>
 <br>
 <div class="container">
+
+    {% if flash('success').message %}
+        <div class="alert alert-{{ flash('success').class }}">
+            {{ flash('success').message }}
+        </div>
+    {% endif %}
+
     {% block body %}{% endblock %}
 </div>
 
