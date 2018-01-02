@@ -46,6 +46,12 @@ class App
     {
         // If the uri contain a / at his end, redirect to the "without /" version of the uri.
         $uri = $request->getUri()->getPath();
+        $parsedBody = $request->getParsedBody();
+        if (array_key_exists('_method', $parsedBody) &&
+            in_array($parsedBody['_method'], ['DELETE', 'PUT'])
+        ) {
+            $request = $request->withMethod($parsedBody['_method']);
+        }
         if (!empty($uri) && $uri[-1] === "/") {
             return (new Response())
                 ->withStatus(301)
@@ -53,7 +59,7 @@ class App
         }
         $route = $this->container->get(Router::class)->match($request);
         if (is_null($route)) {
-            return new Response(404, [], '<h1>Erreur 404</h1>');
+            return new Response(404, [], '<h1>Error 404</h1>');
         }
         foreach ($route->getParams() as $key => $value) {
             $request = $request->withAttribute($key, $value);

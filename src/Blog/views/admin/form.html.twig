@@ -1,0 +1,14 @@
+<div class="form-group">
+    <label for="name">Post title</label>
+    <input type="text" class="form-control" id="name" name="name" value="{{ item.name }}">
+</div>
+<div class="form-group">
+    <label for="slug">Post slug</label>
+    <input type="text" class="form-control" id="slug" name="slug" value="{{ item.slug }}">
+</div>
+<div class="form-group">
+    <label for="content">Post content</label>
+    <textarea cols="30" rows="10" class="form-control" id="content" name="content">
+        {{ item.content }}
+    </textarea>
+</div>

@@ -6,5 +6,4 @@ use function \DI\get;
 
 return [
     'blog.prefix' => '/blog',
-    BlogModule::class => object()->constructorParameter('prefix', get('blog.prefix'))
 ];
