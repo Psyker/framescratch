@@ -67,6 +67,17 @@ class Validator
         return $this;
     }
 
+    public function dateTime(string $key, string $format = 'Y-m-d H:i:s'): self
+    {
+        $value = $this->getValue($key);
+        $date = \DateTime::createFromFormat($format, $value);
+        $errors = \DateTime::getLastErrors();
+        if ($errors['error_count'] > 0 || $errors['warning_count'] > 0 || $date === false) {
+            $this->addError($key, 'datetime', [$format]);
+        }
+        return $this;
+    }
+
     public function length(string $key, ?int $min, ?int $max = null ):self
     {
         $value = $this->getValue($key);
@@ -94,6 +105,11 @@ class Validator
         }
 
         return $this;
+    }
+
+    public function isValid(): bool
+    {
+        return empty($this->errors);
     }
 
     /**

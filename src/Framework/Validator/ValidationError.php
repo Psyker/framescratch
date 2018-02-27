@@ -12,6 +12,7 @@ class ValidationError
         'minLength' => 'The field %s has to contain more than %d characters',
         'maxLength' => 'The field %s has to contain less than %d characters',
         'betweenLength' => 'The field %s has to contain between %d than %d characters',
+        'datetime' => 'The field %s has to be a valid datetime (%s)'
     ];
     /**
      * @var array
