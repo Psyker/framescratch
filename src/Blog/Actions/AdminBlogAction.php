@@ -143,11 +143,10 @@ class AdminBlogAction
             $validator = $this->getValidator($request);
             if ($validator->isValid()) {
                 $this->repository->insert($params);
-                $this->flash->addFlash('success', "The article has been well edited");
+                $this->flash->addFlash('success', "The article has been well created");
                 return $this->redirect('admin.blog.index');
             }
             $errors = $validator->getErrors();
-            $params['id'] = $item->id;
             $item = $params;
         }
 
@@ -162,9 +161,12 @@ class AdminBlogAction
 
     private function getParams(Request $request)
     {
-        return array_filter($request->getParsedBody(), function ($key) {
-            return in_array($key, ['name', 'content', 'slug']);
+        $params = array_filter($request->getParsedBody(), function($key) {
+            return in_array($key, ['name', 'content', 'slug', 'created_at']);
         }, ARRAY_FILTER_USE_KEY);
+        return array_merge($params, [
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
     }
 
     private function getValidator(Request $request)
