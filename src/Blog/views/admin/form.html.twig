@@ -1,4 +1,4 @@
 {{ field('name', item.name, 'Post title') }}
 {{ field('slug', item.slug, 'Link')  }}
 {{  field('content', item.content, 'Content', {type: 'textarea'}) }}
-{{ field('created_at', item.created_at, 'Created date')  }}
+{{ field('created_at', item.created_at, 'Created date', {class: 'datepicker'})  }}

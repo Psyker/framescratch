@@ -28,8 +28,9 @@ class FormExtension extends \Twig_Extension
         $type = $options['type'] ?? 'text';
         $error = $this->getErrorHtml($context, $key);
         $class = 'form-group';
+        $value = $this->convertValue($value);
         $attributes = [
-            'class' => 'form-control',
+            'class' => trim('form-control ' . ($options['class'] ?? '')),
             'id' => $key,
             'name' => $key
         ];
@@ -50,6 +51,20 @@ class FormExtension extends \Twig_Extension
                 {$error}
             </div>
         ";
+    }
+
+    /**
+     * Convert \DateTime to string.
+     * @param $value
+     * @return string
+     */
+    private function convertValue($value): string
+    {
+        if ($value instanceof \DateTime) {
+            return $value->format('Y-m-d H:i:s');
+        } else {
+            return (string) $value;
+        }
     }
 
     /**
@@ -97,9 +112,8 @@ class FormExtension extends \Twig_Extension
      */
     private function getHtmlFromArray(array $attributes)
     {
-        return implode(' ', array_map(function($key, $value) {
+        return implode(' ', array_map(function ($key, $value) {
             return "$key=\"$value\"";
         }, array_keys($attributes), $attributes));
     }
-
 }

@@ -35,8 +35,12 @@ class ValidatorTest extends TestCase
 
     public function testSlugSuccess()
     {
-        $errors = $this->makeValidator(['slug' => 'test-slug01'])
+        $errors = $this->makeValidator([
+            'slug' => 'test-slug01',
+            'slug2' => 'test'
+        ])
             ->slug('slug')
+            ->slug('slug2')
             ->getErrors();
 
         $this->assertCount(0, $errors);
@@ -49,12 +53,13 @@ class ValidatorTest extends TestCase
                 'slug' => 'test-Slug01',
                 'slug2' => 'test-slUg01_demo',
                 'slug3' => 'test--demo-slug',
+                'slug4' => 'test-slug-',
             ]
         )
-            ->slug('slug', 'slug2', 'slug3')
+            ->slug('slug', 'slug2', 'slug3', 'slug4')
             ->getErrors();
 
-        $this->assertCount(3, $errors);
+        $this->assertEquals(['slug', 'slug2', 'slug3', 'slug4'], array_keys($errors));
     }
 
     public function testLength()
@@ -63,7 +68,6 @@ class ValidatorTest extends TestCase
         $this->assertCount(0, $this->makeValidator($params)->length('slug', 3)->getErrors());
         $errors = $this->makeValidator($params)->length('slug', 12)->getErrors();
         $this->assertCount(1, $errors);
-        $this->assertEquals('The field slug has to contain more than 12 characters', $errors['slug']);
         $this->assertCount(1, $this->makeValidator($params)->length('slug', 3, 4)->getErrors());
         $this->assertCount(0, $this->makeValidator($params)->length('slug', 3, 20)->getErrors());
         $this->assertCount(0, $this->makeValidator($params)->length('slug', null, 20)->getErrors());

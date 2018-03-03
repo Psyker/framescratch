@@ -161,7 +161,7 @@ class AdminBlogAction
 
     private function getParams(Request $request)
     {
-        $params = array_filter($request->getParsedBody(), function($key) {
+        $params = array_filter($request->getParsedBody(), function ($key) {
             return in_array($key, ['name', 'content', 'slug', 'created_at']);
         }, ARRAY_FILTER_USE_KEY);
         return array_merge($params, [
@@ -177,6 +177,5 @@ class AdminBlogAction
             ->length('name', 2, 250)
             ->length('name', 2, 50)
             ->slug('slug');
-
     }
 }

@@ -53,6 +53,19 @@ class FormExtensionTest extends TestCase
         ", $html);
     }
 
+    public function testFieldWithClass()
+    {
+        $html = $this->formExtension->field(
+            [], 'name', 'demo', 'Post title', ['class' => 'demo']
+        );
+        $this->assertSimilar("
+            <div class=\"form-group\">
+                <label for=\"name\">Post title</label>
+                <input type=\"text\" class=\"form-control demo\" id=\"name\" name=\"name\" value=\"demo\">
+            </div>
+        ", $html);
+    }
+
     public function trim(string $string)
     {
         $lines = explode(PHP_EOL, $string);
