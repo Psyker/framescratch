@@ -14,9 +14,9 @@ class PostRepository extends Repository
 
     protected function paginationQuery()
     {
-        return "SELECT p.id, p.name, c.name as category_name
+        return "SELECT p.*, c.name as category_name
         FROM {$this->table} as p
         LEFT JOIN categories as c ON p.category_id = c.id
-         ORDER BY created_at DESC";
+        ORDER BY created_at DESC";
     }
 }

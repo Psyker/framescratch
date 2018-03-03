@@ -57,7 +57,7 @@ class Repository
 
     protected function paginationQuery()
     {
-        return 'SELECT * FROM '. $this->table;
+        return "SELECT * FROM  {$this->table}";
     }
 
     /**
