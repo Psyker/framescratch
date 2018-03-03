@@ -2,6 +2,7 @@
 
 namespace App\Blog\Actions;
 
+use App\Blog\Entity\Post;
 use App\Blog\Repository\PostRepository;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
@@ -134,6 +135,7 @@ class AdminBlogAction
      */
     public function create(Request $request)
     {
+        $params = [];
         if ($request->getMethod() === 'POST') {
             $params = $this->getParams($request);
             $params = array_merge($params, [
@@ -147,7 +149,14 @@ class AdminBlogAction
                 return $this->redirect('admin.blog.index');
             }
             $errors = $validator->getErrors();
-            $item = $params;
+        }
+        $item = new Post();
+        $item->created_at = new \DateTime();
+
+        if (!empty($params)) {
+            $item->content = $params['content'];
+            $item->slug = $params['slug'];
+            $item->name = $params['name'];
         }
 
         return $this->renderer->render('@blog/admin/create', compact('item', 'errors'));
@@ -172,10 +181,11 @@ class AdminBlogAction
     private function getValidator(Request $request)
     {
         return (new Validator($request->getParsedBody()))
-            ->required('content', 'name', 'slug')
+            ->required('content', 'name', 'slug', 'created_at')
             ->length('content', 10)
             ->length('name', 2, 250)
             ->length('name', 2, 50)
+            ->dateTime('created_at')
             ->slug('slug');
     }
 }
