@@ -3,8 +3,9 @@ namespace Tests\Framework;
 
 use Framework\Validator;
 use PHPUnit\Framework\TestCase;
+use Tests\DatabaseTestCase;
 
-class ValidatorTest extends TestCase
+class ValidatorTest extends DatabaseTestCase
 {
     public function testRequireIfFail()
     {
@@ -85,5 +86,19 @@ class ValidatorTest extends TestCase
     private function makeValidator(array $params)
     {
         return new Validator($params);
+    }
+
+    public function testExists()
+    {
+        $pdo = $this->getPDO();
+        $pdo->exec('DROP TABLE IF EXISTS test; CREATE TABLE test (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name VARCHAR(255)
+        )');
+        $pdo->exec('INSERT INTO test (name) VALUES ("a1")');
+        $pdo->exec('INSERT INTO test (name) VALUES ("a2")');
+
+        $this->assertTrue($this->makeValidator(['category' => 1])->exists('category', 'test', $pdo)->isValid());
+        $this->assertFalse($this->makeValidator(['category' => 187364])->exists('category', 'test', $pdo)->isValid());
     }
 }

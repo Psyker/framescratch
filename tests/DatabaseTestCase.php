@@ -12,39 +12,24 @@ use Symfony\Component\Console\Output\NullOutput;
 class DatabaseTestCase extends TestCase
 {
     /**
-     * @var PDO
+     * @param PDO $pdo
      */
-    private $pdo;
-
-    /**
-     * @var Manager
-     */
-    private $manager;
-
-    public function setUp()
+    public function seedDatabase(PDO $pdo)
     {
-        $pdo = new PDO('sqlite::memory', null, null, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        ]);
-
-        $configArray = require('phinx.php');
-        $configArray['environments']['testing'] = [
-            'adapter' => 'sqlite',
-            'connection' => $pdo
-        ];
-
-        $config = new Config($configArray);
-        $this->manager = new Manager($config, new StringInput(' '), new NullOutput());
-        $this->manager->migrate('testing');
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
+        $this->getManager($pdo)->migrate('testing');
+        $this->getManager($pdo)->seed('testing');
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-        $this->pdo = $pdo;
     }
 
-    public function seedDatabase()
+    /**
+     * @param PDO $pdo
+     */
+    public function migrateDatabase(PDO $pdo)
     {
-        $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
-        $this->manager->seed('testing');
-        $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
+        $this->getManager($pdo)->migrate('testing');
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
     }
 
     /**
@@ -53,6 +38,25 @@ class DatabaseTestCase extends TestCase
      */
     public function getPDO()
     {
-        return $this->pdo;
+        return new PDO('sqlite::memory', null, null, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
+        ]);
+    }
+
+    /**
+     * @param PDO $pdo
+     * @return Manager
+     */
+    public function getManager(PDO $pdo)
+    {
+        $configArray = require('phinx.php');
+        $configArray['environments']['testing'] = [
+            'adapter' => 'sqlite',
+            'connection' => $pdo
+        ];
+        $config = new Config($configArray);
+
+        return new Manager($config, new StringInput(' '), new NullOutput());
     }
 }

@@ -1,6 +1,8 @@
 <?php
 namespace Framework;
 
+use App\Blog\Repository\CategoryRepository;
+use App\Framework\Database\Repository;
 use Framework\Validator\ValidationError;
 
 class Validator
@@ -74,6 +76,23 @@ class Validator
         $errors = \DateTime::getLastErrors();
         if ($errors['error_count'] > 0 || $errors['warning_count'] > 0 || $date === false) {
             $this->addError($key, 'datetime', [$format]);
+        }
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param Repository|string $repository
+     * @param \PDO $pdo
+     * @return Validator
+     */
+    public function exists(string $key, string $repository, \PDO $pdo): self
+    {
+        $value = $this->getValue($key);
+        $statement = $pdo->prepare("SELECT id FROM {$repository} WHERE id = ?");
+        $statement->execute([$value]);
+        if ($statement->fetchColumn() === false) {
+            $this->addError($key, 'exists', [$repository]);
         }
         return $this;
     }

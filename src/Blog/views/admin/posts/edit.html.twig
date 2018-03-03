@@ -5,8 +5,8 @@
 {% block body %}
 
     <h1>Edit Post : {{ item.name }}</h1>
-    <form action="{{ path('admin.blog.edit', {id: item.id}) }}" method="post">
-        {% include '@blog/admin/form.html.twig' %}
+    <form action="{{ path(routePrefix ~'.edit', {id: item.id}) }}" method="post">
+        {% include viewPath ~ '/form.html.twig' %}
         <button type="submit" class="btn btn-primary">Edit</button>
     </form>
 {% endblock %}

@@ -1,19 +1,16 @@
 <?php
 
-namespace App\Blog\Actions;
+namespace Framework\Actions;
 
-use App\Blog\Entity\Post;
-use App\Blog\Repository\PostRepository;
-use Framework\Actions\RouterAwareAction;
+use App\Framework\Database\Repository;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use Framework\Session\FlashService;
-use Framework\Session\SessionInterface;
 use Framework\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class AdminBlogAction
+class CrudAction
 {
 
     use RouterAwareAction;
@@ -29,7 +26,7 @@ class AdminBlogAction
     private $router;
 
     /**
-     * @var PostRepository
+     * @var Repository
      */
     private $repository;
 
@@ -38,11 +35,28 @@ class AdminBlogAction
      */
     private $flash;
 
+    /**
+     * @var string
+     */
+    protected $viewPath = null;
+
+    /**
+     * @var string
+     */
+    protected $routePrefix;
+
+    /**
+     * @var array
+     */
+    protected $messages = [
+        'create' => "The element has been well created.",
+        'edit' => "The element has been well edited"
+    ];
+
     public function __construct(
         RendererInterface $renderer,
-        PostRepository $repository,
+        Repository $repository,
         Router $router,
-        SessionInterface $session,
         FlashService $flash
     ) {
         $this->router = $router;
@@ -53,6 +67,8 @@ class AdminBlogAction
 
     public function __invoke(Request $request)
     {
+        $this->renderer->addGlobal('viewPath', $this->viewPath);
+        $this->renderer->addGlobal('routePrefix', $this->routePrefix);
         if ($request->getMethod() === 'DELETE') {
             return $this->delete($request);
         }
@@ -66,6 +82,7 @@ class AdminBlogAction
     }
 
     /**
+     * List elements
      * @param Request $request
      * @return string
      */
@@ -74,7 +91,7 @@ class AdminBlogAction
         $params = $request->getQueryParams();
         $items = $this->repository->findPaginated(15, $params['p'] ?? 1);
 
-        return $this->renderer->render('@blog/admin/index', compact('items'));
+        return $this->renderer->render($this->viewPath . '/index', compact('items'));
     }
 
     /**
@@ -101,7 +118,7 @@ class AdminBlogAction
     }
 
     /**
-     * Edit post
+     * Edit element
      * @param Request $request
      * @return ResponseInterface|string
      */
@@ -111,13 +128,12 @@ class AdminBlogAction
 
         if ($request->getMethod() === 'POST') {
             $params = $this->getParams($request);
-            $params['updated_at'] = date('Y-m-d H:i:s');
             $validator = $this->getValidator($request);
             if ($validator->isValid()) {
                 $this->repository->update($item->id, $params);
-                $this->flash->addFlash('success', 'The post has been edited well.');
+                $this->flash->addFlash('success', $this->messages['edit']);
 
-                return $this->redirect('admin.blog.index');
+                return $this->redirect($this->routePrefix . '.index');
             }
             $errors = $validator->getErrors();
             $item->content = $params['content'];
@@ -125,67 +141,65 @@ class AdminBlogAction
             $item->slug = $params['slug'];
         }
 
-        return $this->renderer->render('@blog/admin/edit', compact('item', 'errors'));
+        return $this->renderer->render($this->viewPath . '/edit', $this->formParams(compact('item', 'errors')));
     }
 
     /**
-     * Create post
+     * Create a new element
      * @param Request $request
      * @return ResponseInterface|string
      */
     public function create(Request $request)
     {
-        $params = [];
+        $item = $this->getNewEntity();
         if ($request->getMethod() === 'POST') {
             $params = $this->getParams($request);
-            $params = array_merge($params, [
-                'updated_at' => date('Y-m-d H:i:s'),
-                'created_at' => date('Y-m-d H:i:s'),
-            ]);
             $validator = $this->getValidator($request);
             if ($validator->isValid()) {
                 $this->repository->insert($params);
-                $this->flash->addFlash('success', "The article has been well created");
-                return $this->redirect('admin.blog.index');
+                $this->flash->addFlash('success', $this->messages['create']);
+                return $this->redirect($this->routePrefix . '.index');
             }
+            $item = $params;
             $errors = $validator->getErrors();
         }
-        $item = new Post();
-        $item->created_at = new \DateTime();
 
-        if (!empty($params)) {
-            $item->content = $params['content'];
-            $item->slug = $params['slug'];
-            $item->name = $params['name'];
-        }
-
-        return $this->renderer->render('@blog/admin/create', compact('item', 'errors'));
+        return $this->renderer->render($this->viewPath . '/create', $this->formParams(compact('item', 'errors')));
     }
 
     public function delete(Request $request)
     {
         $this->repository->delete($request->getAttribute('id'));
-        return $this->redirect('admin.blog.index');
+        return $this->redirect($this->routePrefix . '.index');
     }
 
-    private function getParams(Request $request)
+    protected function getParams(Request $request): array
     {
-        $params = array_filter($request->getParsedBody(), function ($key) {
-            return in_array($key, ['name', 'content', 'slug', 'created_at']);
+        return array_filter($request->getParsedBody(), function ($key) {
+            return in_array($key, []);
         }, ARRAY_FILTER_USE_KEY);
-        return array_merge($params, [
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
     }
 
-    private function getValidator(Request $request)
+    protected function getValidator(Request $request)
     {
-        return (new Validator($request->getParsedBody()))
-            ->required('content', 'name', 'slug', 'created_at')
-            ->length('content', 10)
-            ->length('name', 2, 250)
-            ->length('name', 2, 50)
-            ->dateTime('created_at')
-            ->slug('slug');
+        return new Validator($request->getParsedBody());
+    }
+
+    /**
+     * @return array
+     */
+    protected function getNewEntity()
+    {
+        return [];
+    }
+
+    /**
+     * Allow to handle params to send to the view.
+     * @param $params
+     * @return array
+     */
+    protected function formParams(array $params): array
+    {
+        return $params;
     }
 }
