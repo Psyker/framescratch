@@ -2,7 +2,8 @@
 
  namespace Test\Blog\Actions;
 
- use App\Blog\Actions\BlogAction;
+ use App\Blog\Actions\PostIndexAction;
+ use App\Blog\Actions\PostShowAction;
  use App\Blog\Entity\Post;
  use App\Blog\Repository\PostRepository;
  use Framework\Renderer\RendererInterface;
@@ -10,7 +11,7 @@
  use GuzzleHttp\Psr7\ServerRequest;
  use PHPUnit\Framework\TestCase;
 
- class BlogActionTest extends TestCase
+ class PostShowActionTest extends TestCase
  {
 
       /**
@@ -29,7 +30,7 @@
       private $router;
 
       /**
-       * @var BlogAction
+       * @var PostIndexAction
        */
       private $action;
 
@@ -40,7 +41,7 @@
          // PDO
          $this->router = $this->prophesize(Router::class);
 
-         $this->action = new BlogAction(
+         $this->action = new PostShowAction(
              $this->renderer->reveal(),
              $this->repository->reveal(),
              $this->router->reveal()
@@ -69,7 +70,7 @@
                  'id' => $post->id,
                  'slug' => $post->slug
              ])->willReturn('/test3');
-         $this->repository->find($post->id)->willReturn($post);
+         $this->repository->findWithCategory($post->id)->willReturn($post);
 
 
          $response = call_user_func_array($this->action, [$request]);
@@ -84,7 +85,7 @@
              ->withAttribute('id', $post->id)
              ->withAttribute('slug', $post->slug);
 
-         $this->repository->find($post->id)->willReturn($post);
+         $this->repository->findWithCategory($post->id)->willReturn($post);
          $this->renderer->render('@blog/show', ['post' => $post])->willReturn('');
 
          $response = call_user_func_array($this->action, [$request]);

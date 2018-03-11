@@ -2,7 +2,6 @@
 
 namespace App\Blog\Actions;
 
-use App\Blog\Entity\Post;
 use App\Blog\Repository\CategoryRepository;
 use Framework\Actions\CrudAction;
 use Framework\Renderer\RendererInterface;
@@ -39,6 +38,7 @@ class CategoryCrudAction extends CrudAction
             ->required('name', 'slug')
             ->length('name', 2, 250)
             ->length('slug', 2, 50)
+            ->unique('slug', $this->repository->getTable(), $this->repository->getPdo(), $request->getAttribute('id'))
             ->slug('slug');
     }
 }

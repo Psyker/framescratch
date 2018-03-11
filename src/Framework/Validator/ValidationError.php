@@ -13,7 +13,8 @@ class ValidationError
         'maxLength' => 'The field %s has to contain less than %d characters',
         'betweenLength' => 'The field %s has to contain between %d than %d characters',
         'datetime' => 'The field %s has to be a valid datetime (%s)',
-        'exists' => 'The record %s does not exist on %s table'
+        'exists' => 'The record %s does not exist on %s table',
+        'unique' => 'The value of the field %s must be unique'
     ];
     /**
      * @var array

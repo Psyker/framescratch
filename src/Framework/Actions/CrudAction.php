@@ -28,7 +28,7 @@ class CrudAction
     /**
      * @var Repository
      */
-    private $repository;
+    protected $repository;
 
     /**
      * @var FlashService
@@ -136,7 +136,7 @@ class CrudAction
                 return $this->redirect($this->routePrefix . '.index');
             }
             $errors = $validator->getErrors();
-            $item->content = $params['content'];
+            array_key_exists('content', $params) ? $item->content = $params['content'] : null;
             $item->name = $params['name'];
             $item->slug = $params['slug'];
         }

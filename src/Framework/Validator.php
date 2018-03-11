@@ -97,6 +97,35 @@ class Validator
         return $this;
     }
 
+    /**
+     *
+     * Check if key is unique.
+     *
+     * @param string $key
+     * @param Repository|string $repository
+     * @param \PDO $pdo
+     * @param int|null $exclude
+     * @return Validator
+     */
+    public function unique(string $key, string $repository, \PDO $pdo, ?int $exclude = null): self
+    {
+        $value = $this->getValue($key);
+        $query = "SELECT id FROM {$repository} WHERE $key = ?";
+        $params = [$value];
+        if ($exclude !== null) {
+            $query .= " AND id != ?";
+            $params[] = $exclude;
+        }
+        $statement = $pdo->prepare($query);
+        $statement->execute($params);
+        if ($statement->fetchColumn() !== false) {
+            $this->addError($key, 'unique', [$value]);
+        }
+        return $this;
+    }
+
+
+
     public function length(string $key, ?int $min, ?int $max = null):self
     {
         $value = $this->getValue($key);
