@@ -20,7 +20,8 @@
         "http-interop/http-middleware": "^0.5.0",
         "twig/twig": "^2.4",
         "php-di/php-di": "^5.4",
-        "pagerfanta/pagerfanta": "^1.0"
+        "pagerfanta/pagerfanta": "^1.0",
+        "middlewares/whoops": "^1.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.0",

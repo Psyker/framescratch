@@ -3,7 +3,15 @@
 use App\Admin\AdminModule;
 use App\Blog\BlogModule;
 use Framework\App;
+use Framework\Middleware\{
+    DispatcherMiddleware,
+    MethodMiddleware,
+    NotFoundMiddleware,
+    RouterMiddleware,
+    TrailingSlashMiddleware
+};
 use GuzzleHttp\Psr7\ServerRequest;
+use Middlewares\Whoops;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -12,17 +20,16 @@ $modules = [
     BlogModule::class
 ];
 
-$builder = new \DI\ContainerBuilder();
-$builder->addDefinitions(dirname(__DIR__) . "/config/config.php");
-foreach ($modules as $module) {
-    if ($module::DEFINITIONS) {
-        $builder->addDefinitions($module::DEFINITIONS);
-    }
-}
-$builder->addDefinitions(dirname(__DIR__) . "/config.php");
-$container = $builder->build();
+$app = (new App(dirname(__DIR__). '/config/config.php'))
+    ->addModule(AdminModule::class)
+    ->addModule(BlogModule::class)
+    ->pipe(Whoops::class)
+    ->pipe(TrailingSlashMiddleware::class)
+    ->pipe(MethodMiddleware::class)
+    ->pipe(RouterMiddleware::class)
+    ->pipe(DispatcherMiddleware::class)
+    ->pipe(NotFoundMiddleware::class);
 
-$app = new App($container, $modules);
 if (php_sapi_name() != "cli") {
     $response = $app->run(ServerRequest::fromGlobals());
     \Http\Response\send($response);
