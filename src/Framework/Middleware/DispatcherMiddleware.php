@@ -41,5 +41,4 @@ class DispatcherMiddleware
             throw new \Exception('The response is not a string or an instance of ResponseInterface');
         }
     }
-
 }

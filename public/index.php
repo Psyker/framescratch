@@ -3,13 +3,11 @@
 use App\Admin\AdminModule;
 use App\Blog\BlogModule;
 use Framework\App;
-use Framework\Middleware\{
-    DispatcherMiddleware,
-    MethodMiddleware,
-    NotFoundMiddleware,
-    RouterMiddleware,
-    TrailingSlashMiddleware
-};
+use Framework\Middleware\DispatcherMiddleware;
+use Framework\Middleware\MethodMiddleware;
+use Framework\Middleware\NotFoundMiddleware;
+use Framework\Middleware\RouterMiddleware;
+use Framework\Middleware\TrailingSlashMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
 use Middlewares\Whoops;
 
