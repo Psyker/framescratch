@@ -2,8 +2,9 @@
 
 namespace Framework\Middleware;
 
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CsrfMiddleware implements MiddlewareInterface
@@ -31,7 +32,7 @@ class CsrfMiddleware implements MiddlewareInterface
         $this->sessionKey = $sessionKey;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): void
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if (in_array($request->getMethod(), ['POST', 'PUT', 'DELETE'])) {
             $params = $request->getParsedBody() ?: [];

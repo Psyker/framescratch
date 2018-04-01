@@ -2,13 +2,14 @@
 
 namespace Framework\Middleware;
 
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class MethodMiddleware implements MiddlewareInterface
 {
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $parsedBody = $request->getParsedBody();
         if (array_key_exists('_method', $parsedBody) &&
