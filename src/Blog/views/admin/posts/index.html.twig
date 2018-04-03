@@ -16,19 +16,21 @@
         </tr>
         </thead>
         <tbody>
-            {% for item in items %}
-                <tr>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.category_name }}</td>
-                    <td>
-                        <a href="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" class="btn btn-primary">Edit</a>
-                        <form style="display: inline" action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}" method="post" onsubmit="return confirm('Are you sure ?')">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
+        {% set token_input = csrf_input() %}
+        {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.category_name }}</td>
+                <td>
+                    <a href="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" class="btn btn-primary">Edit</a>
+                    <form style="display: inline" action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}" method="post" onsubmit="return confirm('Are you sure ?')">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-danger">Delete</button>
+                        {{ token_input | raw }}
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
     {{ paginate(items, routePrefix ~ '.index') }}

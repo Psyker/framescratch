@@ -3,6 +3,7 @@
 namespace Framework;
 
 use DI\ContainerBuilder;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -68,7 +69,7 @@ class App implements RequestHandlerInterface
             throw new \Exception('None middleware has intercept this request');
         } elseif (is_callable($middleware)) {
             return call_user_func_array($middleware, [$request, [$this, 'handle']]);
-        } else {
+        } elseif ($middleware instanceof MiddlewareInterface) {
             return $middleware->process($request, $this);
         }
     }
@@ -91,7 +92,7 @@ class App implements RequestHandlerInterface
     /**
      * @return ContainerInterface
      */
-    private function getContainer(): ContainerInterface
+    public function getContainer(): ContainerInterface
     {
         if ($this->container === null) {
             $builder = new ContainerBuilder();

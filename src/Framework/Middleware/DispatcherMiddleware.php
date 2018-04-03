@@ -2,7 +2,6 @@
 
 namespace Framework\Middleware;
 
-use Framework\Router;
 use Framework\Router\Route;
 use GuzzleHttp\Psr7\Response;
 use Psr\Container\ContainerInterface;
