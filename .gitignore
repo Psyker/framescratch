@@ -2,3 +2,5 @@
 composer.lock
 .DS_Store
 :memory
+/tmp
+*.iml

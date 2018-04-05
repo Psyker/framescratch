@@ -5,6 +5,7 @@ use Framework\Renderer\RendererInterface;
 use Framework\Renderer\TwigRendererFactory;
 use function \DI\{object, factory, get};
 use Framework\Router;
+use Framework\Router\RouterFactory;
 use Framework\Router\RouterTwigExtension;
 use Framework\Session\PHPSession;
 use Framework\Session\SessionInterface;
@@ -17,6 +18,7 @@ use Framework\Twig\TimeExtension;
 use Psr\Container\ContainerInterface;
 
 return [
+    'env' => \DI\env('ENV', 'production'),
     'database.host' => 'localhost',
     'database.user' => 'root',
     'database.pass' => 'penchaksilat',
@@ -33,7 +35,7 @@ return [
     ),
     SessionInterface::class => object(PHPSession::class),
     CsrfMiddleware::class => object()->constructor(get(SessionInterface::class)),
-    Router::class => object(),
+    Router::class => factory(RouterFactory::class),
     RendererInterface::class => factory(TwigRendererFactory::class),
     \PDO::class => function(ContainerInterface $container ) {
         return $pdo = new PDO(
