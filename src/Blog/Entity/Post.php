@@ -28,25 +28,35 @@ class Post
     /**
      * @var
      */
-    public $created_at;
+    public $createdAt;
 
     /**
      * @var
      */
-    public $updated_at;
+    public $updatedAt;
 
     /**
      * @var string
      */
-    public $category_name;
+    public $categoryName;
 
-    public function __construct()
+    /**
+     * @param mixed $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
     {
-        if ($this->created_at) {
-            $this->created_at = new \DateTime($this->created_at);
+        if (is_string($updatedAt)) {
+            $this->updatedAt = new \DateTime($updatedAt);
         }
-        if ($this->updated_at) {
-            $this->updated_at = new \DateTime($this->updated_at);
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        if (is_string($createdAt)) {
+            $this->createdAt = new \DateTime($createdAt);
         }
     }
 }
