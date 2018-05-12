@@ -15,6 +15,11 @@ class Query
     private $from = null;
 
     /**
+     * @var null|array $join
+     */
+    private $join = [];
+
+    /**
      * @var string|null $entity
      */
     private $entity = null;
@@ -110,6 +115,13 @@ class Query
         return $this;
     }
 
+    public function limit(int $limit, int $offset)
+    {
+        $this->limit = compact('limit', 'offset');
+
+        return $this;
+    }
+
     /**
      * Add conditions to the current query.
      * @param string[] ...$condition
@@ -118,6 +130,13 @@ class Query
     public function where(string ...$condition): self
     {
         $this->where = array_merge($this->where, $condition);
+        return $this;
+    }
+
+    public function join(string $table, string $alias , string $condition): self
+    {
+        $this->join[] = compact('table', 'alias', 'condition');
+
         return $this;
     }
 
@@ -167,7 +186,7 @@ class Query
     {
         $parts = ['SELECT'];
         if ($this->select) {
-            $parts[] = join(',', $this->select);
+            $parts[] = join(', ', $this->select);
         } else {
             $parts[] = '*';
         }
@@ -177,6 +196,13 @@ class Query
             $parts[] = 'WHERE';
             $parts[] = "(" . join(') AND (', $this->where) . ")";
         }
+        if (!empty($this->join)) {
+            $parts[] = $this->buildJoin();
+        }
+        if (!empty($this->limit)) {
+            $parts[] = "LIMIT " . $this->limit['offset'].", ". $this->limit['limit'];
+        }
+
 
         return join(' ', $parts);
     }
@@ -197,5 +223,19 @@ class Query
         }
 
         return join(',', $from);
+    }
+
+    /**
+     * Build join  parameters.
+     * @return string
+     */
+    private function buildJoin(): string
+    {
+        $joins = [];
+        foreach ($this->join as $value) {
+            $joins[] = "LEFT JOIN ${value['table']} as ${value['alias']} ON ${value['condition']}";
+        }
+
+        return join(',', $joins);
     }
 }

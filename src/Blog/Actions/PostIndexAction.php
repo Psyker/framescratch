@@ -28,6 +28,12 @@ class PostIndexAction
      */
     private $categoryRepository;
 
+    /**
+     * PostIndexAction constructor.
+     * @param RendererInterface $renderer
+     * @param PostRepository $repository
+     * @param CategoryRepository $categoryRepository
+     */
     public function __construct(
         RendererInterface $renderer,
         PostRepository $repository,

@@ -26,19 +26,19 @@ class Post
     public $content;
 
     /**
-     * @var
+     * @var \DateTime $createdAt
      */
     public $createdAt;
 
     /**
-     * @var
+     * @var \DateTime $updatedAt
      */
     public $updatedAt;
 
     /**
-     * @var string
+     * @var string $image
      */
-    public $categoryName;
+    public $image;
 
     /**
      * @param mixed $updatedAt

@@ -1,12 +1,17 @@
 {{ csrf_input() | raw }}
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         {{ field('name', item.name, 'Post title') }}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         {{ field('category_id', item.category_id, 'Category', {options: categories}) }}
     </div>
-    <div class="col-md-4">
+</div>
+<div class="row">
+    <div class="col-md-6">
+        {{ field('image', item.smug, "Image", {type: 'file'}) }}
+    </div>
+    <div class="col-md-6">
         {{ field('slug', item.slug, 'Link')  }}
     </div>
 </div>

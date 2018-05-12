@@ -24,7 +24,7 @@
                         <form style="display: inline" action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}" method="post" onsubmit="return confirm('Are you sure ?')">
                             <input type="hidden" name="_method" value="DELETE">
                             <button class="btn btn-danger">Delete</button>
-                            {{ token_input }}
+                            {{ token_input | raw }}
                         </form>
                     </td>
                 </tr>

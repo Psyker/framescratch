@@ -5,7 +5,7 @@
 {% block body %}
 
     <h1>Create Post</h1>
-    <form action="{{ path(routePrefix ~ '.create') }}" method="post">
+    <form action="{{ path(routePrefix ~ '.create') }}" method="post" enctype="multipart/form-data">
         {% include viewPath ~ '/form.html.twig' %}
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
