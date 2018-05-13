@@ -16,7 +16,15 @@ class UploadTest extends TestCase
 
     public function setUp()
     {
-        $this->upload = new Upload('/tmp');
+        $this->upload = new Upload('tests');
+    }
+
+    public function tearDown()
+    {
+        if (file_exists('tests/demo.jpg')) {
+            unlink('tests/demo.jpg');
+        }
+
     }
 
     public function testUpload()
@@ -28,9 +36,26 @@ class UploadTest extends TestCase
 
         $uploadedFile->expects($this->once())
             ->method('moveTo')
-            ->with($this->equalTo('/tmp/demo.jpg'));
+            ->with($this->equalTo('tests/demo.jpg'));
 
 
-        $this->assertEquals($this->upload->upload($uploadedFile), 'demo.jpg');
+        $this->assertEquals('demo.jpg', $this->upload->upload($uploadedFile));
+    }
+
+    public function testUploadWithExistingFile()
+    {
+        $uploadedFile = $this->getMockBuilder(UploadedFileInterface::class)->getMock();
+
+        $uploadedFile->expects($this->any())->method('getClientFilename')
+            ->willReturn('demo.jpg');
+
+        touch('tests/demo.jpg');
+
+        $uploadedFile->expects($this->once())
+            ->method('moveTo')
+            ->with($this->equalTo('tests/demo_copy.jpg'));
+
+
+        $this->assertEquals('demo_copy.jpg', $this->upload->upload($uploadedFile));
     }
 }

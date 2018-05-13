@@ -133,7 +133,7 @@ class Query
         return $this;
     }
 
-    public function join(string $table, string $alias , string $condition): self
+    public function join(string $table, string $alias, string $condition): self
     {
         $this->join[] = compact('table', 'alias', 'condition');
 

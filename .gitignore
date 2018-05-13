@@ -4,3 +4,4 @@ composer.lock
 :memory
 /tmp
 *.iml
+/public/uploads

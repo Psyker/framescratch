@@ -4,9 +4,17 @@ namespace Framework;
 use App\Blog\Repository\CategoryRepository;
 use App\Framework\Database\Repository;
 use Framework\Validator\ValidationError;
+use Psr\Http\Message\UploadedFileInterface;
 
 class Validator
 {
+
+    private const MIME_TYPES = [
+        'jpg' => 'image/jpeg',
+        'png' => 'image/png',
+        'pdf' => 'application/pdf'
+    ];
+
     private $params;
 
     /**
@@ -124,7 +132,41 @@ class Validator
         return $this;
     }
 
+    /**
+     * Check if the file has been well uploaded
+     * @param string $key
+     * @return Validator
+     */
+    public function uploaded(string $key): self
+    {
+        $file = $this->getValue($key);
+        if (is_null($file) || $file->getError() !== UPLOAD_ERR_OK) {
+            $this->addError($key, 'uploaded');
+        }
 
+        return $this;
+    }
+
+    /**
+     * Check file format.
+     * @param string $key
+     * @param array $extensions
+     * @return Validator
+     */
+    public function extension(string $key, array $extensions): self
+    {
+        /** @var UploadedFileInterface $file */
+        $file = $this->getValue($key);
+        if ($file !== null && $file->getError() === UPLOAD_ERR_OK) {
+            $type = $file->getClientMediaType();
+            $extension = mb_strtolower(pathinfo($file->getClientFilename(), PATHINFO_EXTENSION));
+            $expectedType = self::MIME_TYPES[$extension] ?? null;
+            if (!in_array($extension, $extensions) || $expectedType !== $type) {
+                $this->addError($key, 'filetype', [join(', ', $extensions)]);
+            }
+        }
+        return $this;
+    }
 
     public function length(string $key, ?int $min, ?int $max = null):self
     {

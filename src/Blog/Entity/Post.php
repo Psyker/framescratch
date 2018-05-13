@@ -59,4 +59,9 @@ class Post
             $this->createdAt = new \DateTime($createdAt);
         }
     }
+
+    public function getThumb()
+    {
+        return '/uploads/posts/' . $this->image;
+    }
 }
