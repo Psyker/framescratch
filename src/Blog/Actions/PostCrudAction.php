@@ -43,6 +43,18 @@ class PostCrudAction extends CrudAction
 
     /**
      * @param Request $request
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Framework\Database\NoRecordException
+     */
+    public function delete(Request $request)
+    {
+        $post = $this->repository->find($request->getAttribute('id'));
+        $this->postUpload->delete($post->image);
+        return parent::delete($request);
+    }
+
+    /**
+     * @param Request $request
      * @param Post $post
      * @return array
      */
